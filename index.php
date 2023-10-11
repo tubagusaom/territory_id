@@ -26,6 +26,7 @@ See the MIT License for more details
 copyright (c) 2017-2022 by cahya dsn; cahyadsn@gmail.com
 ================================================================================*/
 //--- Database configuration
+
 $dbhost ='localhost';
 $dbuser ='root';
 $dbpass ='';

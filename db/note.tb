@@ -1,0 +1,36 @@
+/*
+ table wilayah get filter data and copy insert data filter to table
+*/
+
+/* creat table */
+DROP TABLE IF EXISTS `xxx`;
+CREATE TABLE `xxx`  (
+  `id` varchar(13) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+/* Get provinsi */
+SELECT * FROM `territoryid_2023_db`.`wilayah` WHERE CHAR_LENGTH(kode)=2
+
+/* Get kabupaten kota */
+SELECT kode,SUBSTRING(kode, -5,2) AS id_provinsi,nama FROM `territoryid_2023_db`.`wilayah` WHERE CHAR_LENGTH(kode)=5
+
+/* Get kecamatan */
+SELECT kode,SUBSTRING(kode, -8,5) AS id_kabupaten_kota,nama FROM `territoryid_2023_db`.`wilayah` WHERE CHAR_LENGTH(kode)=8
+
+/* Get kelurahan */
+SELECT kode,SUBSTRING(kode, -13,8) AS id_kecamatan,nama FROM `territoryid_2023_db`.`wilayah` WHERE CHAR_LENGTH(kode)=13
+
+
+/* copy insert data provinsi */
+insert into provinsi (id, nama) select kode, nama from wilayah WHERE CHAR_LENGTH(kode)=2
+
+/* copy insert data kabupaten kota */
+insert into kabupaten_kota (id, id_provinsi_kota, nama) select kode,SUBSTRING(kode, -5,2), nama from wilayah WHERE CHAR_LENGTH(kode)=5
+
+/* copy insert data kecamatan */
+insert into kelurahan (id, id_kabupaten_kota, nama) select kode,SUBSTRING(kode, -8,5), nama from wilayah WHERE CHAR_LENGTH(kode)=8
+
+/* copy insert data kelurahan */
+insert into kelurahan (id, id_kecamatan, nama) select kode,SUBSTRING(kode, -13,8), nama from wilayah WHERE CHAR_LENGTH(kode)=13
