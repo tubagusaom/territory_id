@@ -61,7 +61,7 @@ header('Pragma: no-cache');*/
     <script src="js/jquery.min.js"></script>
     <script src="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.js"></script>
     <link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.css"/>
-    <script src="inc/geo_js.php?v=<?php echo $_SESSION['ver'];?>"></script>
+    <script src="inc/geo_js.php?v=<?php echo $_SESSION['ver'];?>"></script> 
 </head>
 <body>
     <div class="w3-top">
