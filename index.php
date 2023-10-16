@@ -1,123 +1,255 @@
-<?php
-/*
-BISMILLAAHIRRAHMAANIRRAHIIM - In the Name of Allah, Most Gracious, Most Merciful
-================================================================================
-filename 	: index.php
-purpose  	: main application page
-create   	: 20170117
-last edit	: 20220516
-author   	: cahya dsn
-demo site 	: https://wilayah.cahyadsn.com/v2
-soure code 	: https://github.com/cahyadsn/wilayah
-================================================================================
-This program is free software; you can redistribute it and/or modify it under the
-terms of the MIT License.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-See the MIT License for more details
-
-copyright (c) 2017-2022 by cahya dsn; cahyadsn@gmail.com
-================================================================================*/
-//--- Database configuration
-
-$dbhost ='localhost';
-$dbuser ='root';
-$dbpass ='';
-$dbname ='idwilayah_db';
-$dbdsn = "mysql:dbname={$dbname};host={$dbhost}";
-try {
-  $db = new PDO($dbdsn, $dbuser, $dbpass);
-} catch (PDOException $e) {
-  echo 'Connection failed: '.$e->getMessage();
-}
-$wil=array(
-	2=>array(5,'Kota/Kabupaten','kab'),
-	5=>array(8,'Kecamatan','kec'),
-	8=>array(13,'Kelurahan','kel')
-);
-
-if (isset($_GET['id']) && !empty($_GET['id'])){
-	$n=strlen($_GET['id']);
-	$query = $db->prepare("SELECT * FROM wilayah WHERE LEFT(kode,:n)=:id AND CHAR_LENGTH(kode)=:m ORDER BY nama");
-	$query->execute(array(':n'=>$n,':id'=>$_GET['id'],':m'=>$wil[$n][0]));
-	echo"<option value=''>Pilih {$wil[$n][1]}</option>";
-	while($d = $query->fetchObject())
-		echo "<option value='{$d->kode}'>{$d->nama}</option>";
-}else{
-?>
-<!DOCTYPE html>
+<!doctype html>
 <html>
-	<head>
-		<title>Data Daerah</title>
-		<style>
-			td,select {width:240px;}
-			#kab_box,#kec_box,#kel_box{display:none;}
-		 </style>
-		<script>
-		var my_ajax=do_ajax();
-		var ids;
-		var wil=new Array('kab','kec','kel');
-		function ajax(id){
-			if(id.length<13){
-				ids=id;
-				var url="?id="+id+"&sid="+Math.random();
-				my_ajax.onreadystatechange=stateChanged;
-				my_ajax.open("GET",url,true);
-				my_ajax.send(null);
-			}
-		}
-		function do_ajax(){
-			if (window.XMLHttpRequest) return new XMLHttpRequest();
-			if (window.ActiveXObject) return new ActiveXObject("Microsoft.XMLHTTP");
-			return null;
-		}
-		function stateChanged(){
-			var n=ids.length;
-			var w=(n==2?wil[0]:(n==5?wil[1]:wil[2]));
-			var data;
-			if (my_ajax.readyState==4){
-				data=my_ajax.responseText;
-				document.getElementById(w).innerHTML = data.length>=0 ? data:"<option selected>Pilih Kota/Kab</option>";
-				<?php foreach($wil as $k=>$w):?>
-					document.getElementById("<?php echo $w[2];?>_box").style.display=(n><?php echo $k-1;?>)?'table-row':'none';
-				<?php endforeach;?>
-			}
-		}
-		</script>
-	</head>
-	<body>
-		<table>
-			<tr>
-			<td>Provinsi</td>
-			<td>
-				<select id="prov" onchange="ajax(this.value)">
-					<option value="">Provinsi</option>
-					<?php
-					$query=$db->prepare("SELECT kode,nama FROM wilayah WHERE CHAR_LENGTH(kode)=2 ORDER BY nama");
-					$query->execute();
-					while ($data=$query->fetchObject())
-						echo '<option value="'.$data->kode.'">'.$data->nama.'</option>';
-					?>
-				<select>
-			</td>
-		</tr>
-		<?php foreach($wil as $w):?>
-		<tr id='<?php echo $w[2];?>_box'>
-			<td><?php echo $w[1];?></td>
-			<td>
-				<select id="<?php echo $w[2];?>" onchange="ajax(this.value)">
-					<option value="">Pilih <?php echo $w[1];?></option>
-				</select>
-			</td>
-		</tr>
-		<?php endforeach;?>
-	</body>
+    
+<?php
+    include_once 'db/config/koneksi.php';
+    include_once "db/config/territory.php";
+?>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Wilayah Indonesia 2023 | TeraByte</title>
+    <meta name="description" content="Wilayah Indonesia 2023" />
+    <meta name="keywords" content="Wilayah, Indonesia, Territory, 2023 , IT, Consultan IT, Consultan, website" />
+    <meta name="author" content="terabyte" />
+
+    <!-- Favicon -->
+    <!-- <link rel="shortcut icon" href="favicon_tb.ico"> -->
+    <link rel="shortcut icon" href="favicon_tb.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="favicon_tb.ico">
+
+    <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
+    <meta property="og:site_name" content="Wilayah Indonesia 2023 | TeraByte" /> <!-- website name -->
+    <meta property="og:site" content="https://terabytee.my.id/" /> <!-- website link -->
+    <meta property="og:title" content="TeraByte | Wilayah Indonesia"/> <!-- title shown in the actual shared post -->
+    <meta property="og:description" content="Wilayah Indonesia 2023" /> <!-- description shown in the actual shared post -->
+    <meta property="og:image" content="https://terabytee.my.id/images/icon_tb_circle.png" /> <!-- image link, make sure it's jpg -->
+    <meta property="og:url" content="https://terabytee.my.id/" /> <!-- where do you want your post to link to -->
+    <meta name="twitter:card" content="https://terabytee.my.id/images/icon_tb_circle.png"> <!-- to have large image post format in Twitter -->
+
+
+
+	<link rel="stylesheet" href="assets/css/select2.min.css">
+	<!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css"> -->
+
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/select2-bootstrap.css">
+	<link rel="stylesheet" href="assets/css/gh-pages.sass">
+	<!--[if lt IE 9]>
+		<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		<script src="js/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+	<header class="navbar navbar-default" role="navigation">
+		<div class="container">
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="<?=base_url()?>">Wilayah Indonesia</a>
+                    </div>
+                    
+                    <div id="navbar" class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a href="<?=base_url()?>">2023</a></li>
+                        </ul>
+
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="https://github.com/tubagusaom/territory_id" target="_blank">
+                                    <i class="fa fa-github"></i> GitHub
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+		</div>
+	</header>
+
+    <div class="container my-4" style="height: 3000px;">
+        <div class="starter-template">
+            <!-- <h1>Bootstrap starter template</h1> -->
+
+            <div class="form-group">
+                <label for="provinsi" class="control-label">Provinsi</label>
+                <select id="provinsi" class="form-control select2-provinsi">
+                    <option></option>
+                    <optgroup label="Provinsi">
+                        <?php
+                            $sql_a="SELECT provinsi.id,provinsi.nama from provinsi ORDER BY provinsi.nama ASC";
+                            $query_a=mysqli_query($koneksi,$sql_a);
+                            while($dataa=mysqli_fetch_array($query_a))
+                            {
+                                echo "<option value='$dataa[0]'>$dataa[1]</option>";
+                            };
+                        ?>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div id="div-kabupaten" class="form-group">
+                <label for="kabupaten" class="control-label">Kabupaten</label>
+                <select id="kabupaten" class="form-control select2-kabupaten">
+                    <option></option>
+                    <optgroup id="opt-kab" label="Kabupaten"></optgroup>
+                </select>
+            </div>
+
+            <div id="div-kecamatan" class="form-group">
+                <label for="kecamatan" class="control-label">Kecamatan</label>
+                <select id="kecamatan" class="form-control select2-kecamatan">
+                    <option></option>
+                    <optgroup id="opt-kec" label="Kecamatan"></optgroup>
+                </select>
+            </div>
+
+            <div id="div-kelurahan" class="form-group">
+                <label for="kelurahan" class="control-label">Kelurahan</label>
+                <select id="kelurahan" class="form-control select2-kelurahan">
+                    <option></option>
+                    <optgroup id="opt-kel" label="Kelurahan"></optgroup>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="bg-inverse text-center text-lg-start fixed-bottom">
+        <div class="text-center m-5">
+            Copyright © <a style="text-decoration: none;" href="https://terabytee.my.id" target="_blank">terabytee</a>
+            <script>
+                var CurrentYear = new Date().getFullYear()
+                document.write(CurrentYear)
+            </script>
+        </div>
+    </footer>
+
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.full.js"></script>
+
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/anchor.min.js"></script>
+	<script>
+
+        
+
+		// anchors.options.placement = 'left';
+		// anchors.add('.container h1, .container h2, .container h3, .container h4, .container h5');
+        
+		$.fn.select2.defaults.set("theme", "bootstrap");
+
+		var placeholderA = "Pilih Provinsi";
+        $("#provinsi").select2({
+			placeholder: placeholderA,
+			width: null,
+			containerCssClass: ':all:'
+		});
+
+        var placeholderB = "Pilih Kabupaten";
+        $("#kabupaten").select2({
+			placeholder: placeholderB,
+			width: null,
+			containerCssClass: ':all:'
+		});
+
+        var placeholderC = "Pilih Kecamatan";
+        $("#kecamatan").select2({
+			placeholder: placeholderC,
+			width: null,
+			containerCssClass: ':all:'
+		});
+
+        var placeholderD = "Pilih Kelurahan";
+        $("#kelurahan").select2({
+			placeholder: placeholderD,
+			width: null,
+			containerCssClass: ':all:'
+		});
+
+        var baseUrl = "<?= base_url(); ?>";
+
+        $("#div-kabupaten").hide();
+        $("#div-kecamatan").hide();
+        $("#div-kelurahan").hide();
+
+        // alert(baseUrl);
+
+        $('#provinsi').change(function () {
+            $('#div-kabupaten').show();
+            var id = $(this).val();
+            var basepost = baseUrl+'db/config/selected.php';
+
+            $.ajax({
+                url: basepost,
+                type: "POST",
+                data: {
+                    id: id,
+                    name: '1'
+                },
+                success: function (hasil) {
+                    $('#opt-kab').html(hasil);
+                }
+            });
+            return false;
+        });
+
+        $('#kabupaten').change(function () {
+            $('#div-kecamatan').show();
+            var id = $(this).val();
+
+            // alert(id);
+
+            var basepost = baseUrl+'db/config/selected.php';
+
+            $.ajax({
+                url: basepost,
+                type: "POST",
+                data: {
+                    id: id,
+                    name: '2'
+                },
+                success: function (hasil) {
+                    $('#opt-kec').html(hasil);
+                }
+            });
+            return false;
+        });
+
+        $('#kecamatan').change(function () {
+            $('#div-kelurahan').show();
+            var id = $(this).val();
+
+            // alert(id);
+
+            var basepost = baseUrl+'db/config/selected.php';
+
+            $.ajax({
+                url: basepost,
+                type: "POST",
+                data: {
+                    id: id,
+                    name: '3'
+                },
+                success: function (hasil) {
+                    $('#opt-kel').html(hasil);
+                }
+            });
+            return false;
+        });
+        
+	</script>
+</body>
+
 </html>
-<?php } ?>
