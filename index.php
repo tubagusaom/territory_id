@@ -244,9 +244,8 @@
                     id: id,
                     name: '3'
                 },
-                dataType: 'json',
-                success: function(hasilk) {
-                    $('#opt-kel').html(hasilk);
+                success: function(hasil) {
+                    $('#opt-kel').html(hasil);
                 }
             });
             return false;

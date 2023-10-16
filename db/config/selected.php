@@ -65,7 +65,7 @@ include_once 'koneksi.php';
     $sql="SELECT * from `$table` WHERE `$where` = '$id' ORDER BY `nama` ASC";
     $query=mysqli_query($koneksi,$sql);
     while($data = mysqli_fetch_array($query)){
-        echo $option = "<option value=$data[id]> $data[nama] </option>";
+        echo "<option value=$data[id]> $data[nama] </option>";
     }
     // exit;
 
