@@ -198,7 +198,7 @@
                     id: id,
                     name: '1'
                 },
-                success: function (hasil) {
+                success: function(hasil) {
                     $('#opt-kab').html(hasil);
                 }
             });
@@ -220,7 +220,7 @@
                     id: id,
                     name: '2'
                 },
-                success: function (hasil) {
+                success: function(hasil) {
                     $('#opt-kec').html(hasil);
                 }
             });
@@ -235,6 +235,8 @@
 
             var basepost = baseUrl+'db/config/selected.php';
 
+            // alert(id);
+
             $.ajax({
                 url: basepost,
                 type: "POST",
@@ -242,8 +244,9 @@
                     id: id,
                     name: '3'
                 },
-                success: function (hasil) {
-                    $('#opt-kel').html(hasil);
+                dataType: 'json',
+                success: function(hasilk) {
+                    $('#opt-kel').html(hasilk);
                 }
             });
             return false;

@@ -5,7 +5,7 @@ include_once 'koneksi.php';
 // $datapost['id'] = $_POST['id'];
 // $datapost['nama'] = $_POST['name'];
 
-if (isset($_POST['id']) && !empty($_POST['id'])){
+// if (isset($_POST['id']) && !empty($_POST['id'])){
     
     $id = strval($_POST['id']);
     $name = intval($_POST['name']);
@@ -17,34 +17,34 @@ if (isset($_POST['id']) && !empty($_POST['id'])){
         $table = "kabupaten_kota";
         $where = "id_provinsi";
 
-        $sql="SELECT * from $table WHERE $where = $id ORDER BY nama ASC";
-        $query=mysqli_query($koneksi,$sql);
+        // $sql="SELECT * from $table WHERE $where = $id ORDER BY `nama` ASC";
+        // $query=mysqli_query($koneksi,$sql);
 
         // while($data = mysqli_fetch_array($query)){
         //     echo $option = "<option value=$data[id]> $data[nama] </option>";
         // }
-    }elseif($name == 2) {
+    }else if($name == 2) {
         // $id = ($_POST['id']);
         // $name = ($_POST['name']);
 
         $table = "kecamatan";
         $where = "id_kabupaten";
 
-        $sql="SELECT * from $table WHERE $where = $id ORDER BY nama ASC";
-        $query=mysqli_query($koneksi,$sql);
+        // $sql="SELECT * from $table WHERE $where = $id ORDER BY `nama` ASC";
+        // $query=mysqli_query($koneksi,$sql);
 
         // while($data = mysqli_fetch_array($query)){
         //     echo $option = "<option value=$data[id]> $data[nama] </option>";
         // }
-    }elseif($name == 3) {
+    }else if($name == 3) {
         // $id = ($_POST['id']);
         // $name = ($_POST['name']);
 
         $table = "kelurahan";
         $where = "id_kecamatan";
 
-        $sql="SELECT * from $table WHERE $where = $id ORDER BY nama ASC";
-        $query=mysqli_query($koneksi,$sql);
+        // $sql="SELECT * from $table WHERE $where = $id ORDER BY `nama` ASC";
+        // $query=mysqli_query($koneksi,$sql);
 
         // while($data = mysqli_fetch_array($query)){
         //     echo $option = "<option value=$data[id]> $data[nama] </option>";
@@ -61,7 +61,9 @@ if (isset($_POST['id']) && !empty($_POST['id'])){
     //     $query="";
     //     // $option ="";
     // }
-
+    
+    $sql="SELECT * from `$table` WHERE `$where` = '$id' ORDER BY `nama` ASC";
+    $query=mysqli_query($koneksi,$sql);
     while($data = mysqli_fetch_array($query)){
         echo $option = "<option value=$data[id]> $data[nama] </option>";
     }
@@ -81,4 +83,4 @@ if (isset($_POST['id']) && !empty($_POST['id'])){
     // var_dump($data); die();
     // echo ($output);
     
-}
+// }
