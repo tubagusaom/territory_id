@@ -2,3 +2,5 @@
 dump-*
 /inc/db.php
 /src
+
+db/config/koneksi.php
